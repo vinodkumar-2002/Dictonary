@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dictionary App</title>
+    <!-- Include Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<!-- <body style="background:linear-gradient(to center,#549aed,#94bbe9,#eeaeca,#94bbe9,#549aed);"> -->
+
+<body style="background: linear-gradient(to right, blue, red);display: flex; justify-content: center; align-items: center;">
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-10">
+                <div class="card">
+                    <div class="card-header" style="font-size:250%; background-color: #549aed;">
+                        <b> Dictionary App</b>
+                    </div>
+                    <div class="card-body" style="background-color:#eef4fc;">
+                        <div class="form-group">
+                            <input type="text" class="form-control" id="wordInput" placeholder="Enter a word">
+                        </div>
+                        <button class="btn btn-primary" onclick="getDictionaryDefinition()">Search</button>
+                        <div class="mt-3" id="resultContainer"></div>
+                        <div class="container mt-5" id="blo" style="display: none;">
+                            <div class="card">
+                                <div class="card-header">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <p id="word"></p>
+                                        <button class="btn btn-primary btn-sm" onclick="copyText()">Copy</button>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <p id="def"></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Include Bootstrap JS and Popper.js -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+    <script>
+        async function getDictionaryDefinition() {
+            const word = document.getElementById('wordInput').value;
+            const url = `https://dictionary-by-api-ninjas.p.rapidapi.com/v1/dictionary?word=${word}`;
+            const options = {
+                method: 'GET',
+                headers: {
+                    'X-RapidAPI-Key': '1c8e69b71bmsh91d8dd8ce5ffd6fp1fc3c9jsnb9837f306ee2',
+                    'X-RapidAPI-Host': 'dictionary-by-api-ninjas.p.rapidapi.com'
+                }
+            };
+
+            try {
+                const response = await fetch(url, options);
+                const result = await response.json();
+                // document.getElementById('resultContainer').innerHTML = result.valid;
+                if(result.valid === false)
+                {
+                    alert("Enter valid word!!!")
+                }
+                else
+                {
+                    document.getElementById("blo").style.display="block";
+                    document.getElementById("def").innerHTML=result.definition;
+                    document.getElementById("word").innerHTML=result.word;
+                    
+                }
+
+            } catch (error) {
+                console.error(error);
+                document.getElementById('resultContainer').innerHTML = 'An error occurred while fetching the data.';
+            }
+        }
+
+        function copyText() {
+            const textToCopy = document.getElementById('def').innerText;
+
+            const tempTextArea = document.createElement('textarea');
+            tempTextArea.value = textToCopy;
+
+            document.body.appendChild(tempTextArea);
+
+            tempTextArea.select();
+            document.execCommand('copy');
+
+            document.body.removeChild(tempTextArea);
+
+            alert('Text copied to clipboard!');
+        }
+    </script>
+
+</body>
+
+</html>
